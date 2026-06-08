@@ -60,6 +60,10 @@ docker compose logs -f rabbitmq
 docker compose logs -f elasticsearch
 ```
 
+## Troubleshooting
+
+If `docker compose up -d` fails with `Bind for 0.0.0.0:6379 failed: port is already allocated`, another Redis instance is already using the local Redis port. Stop the existing Redis service, or temporarily change the Redis port mapping in `docker-compose.yml` and the Redis port in `src/main/resources/application-dev.yml`.
+
 ## Phase 1 Scope
 
 This phase provides the runnable Spring Boot skeleton, unified response and exception handling, Swagger, MyBatis-Plus configuration, Docker Compose middleware, and database initialization SQL. Business modules such as authentication, categories, subscriptions, bills, reminders, and search will be implemented in later phases.
