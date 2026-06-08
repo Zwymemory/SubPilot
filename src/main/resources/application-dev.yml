@@ -4,7 +4,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/subpilot?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:mysql://localhost:${SUBPILOT_MYSQL_PORT:3306}/subpilot?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
     username: subpilot
     password: subpilot123
     hikari:
@@ -15,13 +15,13 @@ spring:
   data:
     redis:
       host: localhost
-      port: 6379
+      port: ${SUBPILOT_REDIS_PORT:6379}
       database: 0
       timeout: 3s
 
   rabbitmq:
     host: localhost
-    port: 5672
+    port: ${SUBPILOT_RABBITMQ_PORT:5672}
     username: guest
     password: guest
     virtual-host: /

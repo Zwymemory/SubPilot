@@ -14,7 +14,7 @@ services:
       - --collation-server=utf8mb4_unicode_ci
       - --default-time-zone=+08:00
     ports:
-      - "3306:3306"
+      - "${SUBPILOT_MYSQL_PORT:-3306}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
@@ -31,7 +31,7 @@ services:
     container_name: subpilot-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "${SUBPILOT_REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
     networks:
@@ -50,8 +50,8 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "${SUBPILOT_RABBITMQ_PORT:-5672}:5672"
+      - "${SUBPILOT_RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
@@ -71,7 +71,7 @@ services:
       xpack.security.enabled: "false"
       ES_JAVA_OPTS: -Xms512m -Xmx512m
     ports:
-      - "9200:9200"
+      - "${SUBPILOT_ELASTICSEARCH_PORT:-9200}:9200"
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
     networks:
@@ -89,7 +89,7 @@ services:
     environment:
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
     ports:
-      - "5601:5601"
+      - "${SUBPILOT_KIBANA_PORT:-5601}:5601"
     depends_on:
       - elasticsearch
     networks:

@@ -6,7 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
-@MapperScan("com.subpilot.**.mapper")
+@MapperScan({
+        "com.subpilot.module.user.mapper",
+        "com.subpilot.module.category.mapper"
+})
 @SpringBootApplication
 public class SubPilotApplication {
 
