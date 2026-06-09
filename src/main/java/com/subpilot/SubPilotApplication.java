@@ -8,7 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @MapperScan({
         "com.subpilot.module.user.mapper",
-        "com.subpilot.module.category.mapper"
+        "com.subpilot.module.category.mapper",
+        "com.subpilot.module.subscription.mapper"
 })
 @SpringBootApplication
 public class SubPilotApplication {
