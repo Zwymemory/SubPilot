@@ -2,6 +2,7 @@ package com.subpilot.infrastructure.redis;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.subpilot.module.dashboard.vo.DashboardSummaryVO;
 import com.subpilot.module.subscription.vo.SubscriptionVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class CacheService {
 
     private static final Duration SUBSCRIPTION_DETAIL_TTL = Duration.ofMinutes(30);
+    private static final Duration DASHBOARD_SUMMARY_TTL = Duration.ofMinutes(10);
     private static final Duration EMPTY_VALUE_TTL = Duration.ofMinutes(2);
     private static final String EMPTY_VALUE = "__EMPTY__";
 
@@ -79,6 +81,33 @@ public class CacheService {
         }
     }
 
+    public Optional<DashboardSummaryVO> getDashboardSummary(Long userId) {
+        try {
+            String value = stringRedisTemplate.opsForValue().get(dashboardSummaryKey(userId));
+            if (value == null) {
+                return Optional.empty();
+            }
+            return Optional.of(objectMapper.readValue(value, DashboardSummaryVO.class));
+        } catch (Exception exception) {
+            log.debug("Read dashboard summary cache failed: userId={}", userId, exception);
+            return Optional.empty();
+        }
+    }
+
+    public void setDashboardSummary(Long userId, DashboardSummaryVO summary) {
+        try {
+            stringRedisTemplate.opsForValue().set(
+                    dashboardSummaryKey(userId),
+                    objectMapper.writeValueAsString(summary),
+                    DASHBOARD_SUMMARY_TTL
+            );
+        } catch (JsonProcessingException exception) {
+            log.debug("Serialize dashboard summary cache failed: userId={}", userId, exception);
+        } catch (Exception exception) {
+            log.debug("Write dashboard summary cache failed: userId={}", userId, exception);
+        }
+    }
+
     public void evictCategoryList(Long userId) {
         try {
             stringRedisTemplate.delete("subpilot:category:list:" + userId);
@@ -89,5 +118,9 @@ public class CacheService {
 
     private String subscriptionDetailKey(Long userId, Long subscriptionId) {
         return "subpilot:subscription:detail:%d:%d".formatted(userId, subscriptionId);
+    }
+
+    private String dashboardSummaryKey(Long userId) {
+        return "subpilot:dashboard:summary:" + userId;
     }
 }
