@@ -2,7 +2,7 @@
 
 SubPilot is a Java Spring Boot backend for intelligent subscription and digital asset management.
 
-Current progress: phase 5, reminder scheduling and RabbitMQ notification flow.
+Current progress: phase 6, Elasticsearch subscription search and index synchronization.
 
 See [README-local.md](README-local.md) for local startup instructions.
 

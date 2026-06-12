@@ -8,6 +8,7 @@ import com.subpilot.common.exception.ErrorCode;
 import com.subpilot.infrastructure.redis.CacheService;
 import com.subpilot.module.category.entity.CategoryEntity;
 import com.subpilot.module.category.service.CategoryService;
+import com.subpilot.module.search.service.SubscriptionSearchService;
 import com.subpilot.module.subscription.dto.SubscriptionCreateRequest;
 import com.subpilot.module.subscription.dto.SubscriptionUpdateRequest;
 import com.subpilot.module.subscription.entity.SubscriptionEntity;
@@ -39,6 +40,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionMapper subscriptionMapper;
     private final CategoryService categoryService;
     private final CacheService cacheService;
+    private final SubscriptionSearchService subscriptionSearchService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -50,6 +52,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         SubscriptionEntity subscription = new SubscriptionEntity();
         fillCreateFields(subscription, userId, request, now);
         subscriptionMapper.insert(subscription);
+        syncSearchIndex(subscription);
         cacheService.evictDashboard(userId);
         log.info("Created subscription: userId={}, subscriptionId={}", userId, subscription.getId());
         return toVO(subscription);
@@ -84,8 +87,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .set(SubscriptionEntity::getUpdatedAt, now));
         cacheService.evictSubscriptionDetail(userId, id);
         cacheService.evictDashboard(userId);
+        SubscriptionEntity updatedSubscription = getOwnedEntityOrThrow(userId, id);
+        syncSearchIndex(updatedSubscription);
         log.info("Updated subscription: userId={}, subscriptionId={}", userId, id);
-        return toVO(getOwnedEntityOrThrow(userId, id));
+        return toVO(updatedSubscription);
     }
 
     @Override
@@ -94,6 +99,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         Long userId = UserContext.getUserId();
         getOwnedEntityOrThrow(userId, id);
         subscriptionMapper.deleteById(id);
+        removeSearchIndex(id);
         cacheService.evictSubscriptionDetail(userId, id);
         cacheService.evictDashboard(userId);
         log.info("Deleted subscription: userId={}, subscriptionId={}", userId, id);
@@ -264,5 +270,21 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             return null;
         }
         return value.trim();
+    }
+
+    private void syncSearchIndex(SubscriptionEntity subscription) {
+        try {
+            subscriptionSearchService.indexSubscription(subscription);
+        } catch (RuntimeException exception) {
+            log.warn("Sync subscription search index failed: subscriptionId={}", subscription.getId(), exception);
+        }
+    }
+
+    private void removeSearchIndex(Long subscriptionId) {
+        try {
+            subscriptionSearchService.deleteSubscription(subscriptionId);
+        } catch (RuntimeException exception) {
+            log.warn("Remove subscription search index failed: subscriptionId={}", subscriptionId, exception);
+        }
     }
 }

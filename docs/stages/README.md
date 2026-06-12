@@ -9,6 +9,7 @@
 3. [阶段三：分类与订阅资产](phase-3-categories-subscriptions.md)
 4. [阶段四：账单与看板统计](phase-4-bills-dashboard.md)
 5. [阶段五：定时任务与 RabbitMQ 提醒](phase-5-reminders-rabbitmq.md)
+6. [阶段六：Elasticsearch 订阅搜索](phase-6-elasticsearch-search.md)
 
 每篇文档都按同一种方式组织：
 
