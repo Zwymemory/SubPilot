@@ -11,7 +11,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         "com.subpilot.module.category.mapper",
         "com.subpilot.module.subscription.mapper",
         "com.subpilot.module.bill.mapper",
-        "com.subpilot.module.notification.mapper"
+        "com.subpilot.module.notification.mapper",
+        "com.subpilot.module.reminder.mapper"
 })
 @SpringBootApplication
 public class SubPilotApplication {
