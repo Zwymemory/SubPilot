@@ -98,17 +98,18 @@ mvn spring-boot:run
 
 1. 打开 Swagger。
 2. 注册用户：`POST /api/auth/register`。
-3. 登录用户：`POST /api/auth/login`。
-4. 复制返回的 `accessToken`。
-5. 在 Swagger 右上角 Authorize 中填入 `Bearer token`。
-6. 查询默认分类：`GET /api/categories`。
-7. 创建订阅：`POST /api/subscriptions`。
-8. 查询订阅列表和详情。
-9. 创建账单：`POST /api/bills`。
-10. 标记账单已支付：`PUT /api/bills/{id}/paid`。
-11. 查看看板：`GET /api/dashboard/summary`。
-12. 搜索订阅：`GET /api/search/subscriptions`。
-13. 重建搜索索引：`POST /api/search/subscriptions/rebuild`。
+3. 获取登录验证码：`GET /api/auth/captcha`。
+4. 登录用户：`POST /api/auth/login`，请求中带上 `captchaId` 和 `captchaCode`。
+5. 复制返回的 `accessToken`。
+6. 在 Swagger 右上角 Authorize 中填入 `Bearer token`。
+7. 查询默认分类：`GET /api/categories`。
+8. 创建订阅：`POST /api/subscriptions`。
+9. 查询订阅列表和详情。
+10. 创建账单：`POST /api/bills`。
+11. 标记账单已支付：`PUT /api/bills/{id}/paid`。
+12. 查看看板：`GET /api/dashboard/summary`。
+13. 搜索订阅：`GET /api/search/subscriptions`。
+14. 重建搜索索引：`POST /api/search/subscriptions/rebuild`。
 
 ## 常见问题
 

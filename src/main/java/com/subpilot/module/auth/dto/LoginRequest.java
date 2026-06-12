@@ -13,6 +13,14 @@ public record LoginRequest(
 
         @NotBlank(message = "密码不能为空")
         @Schema(description = "Password", example = "123456")
-        String password
+        String password,
+
+        @NotBlank(message = "验证码 ID 不能为空")
+        @Schema(description = "Captcha ID returned by /api/auth/captcha")
+        String captchaId,
+
+        @NotBlank(message = "验证码不能为空")
+        @Schema(description = "Captcha code", example = "A7K9Q")
+        String captchaCode
 ) {
 }

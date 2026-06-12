@@ -8,6 +8,7 @@
 
 - 注册用户。
 - 登录用户。
+- 登录图形验证码。
 - 密码加密。
 - 生成 JWT。
 - 校验 JWT。
@@ -58,6 +59,12 @@ Authorization: Bearer <token>
 
 - `module/auth/service/AuthService.java`
 - `module/auth/service/AuthServiceImpl.java`
+- `module/auth/service/CaptchaService.java`
+- `module/auth/service/CaptchaServiceImpl.java`
+
+认证响应：
+
+- `module/auth/vo/CaptchaVO.java`
 
 用户接口：
 
@@ -102,16 +109,26 @@ POST /api/auth/register
 用户访问：
 
 ```text
+GET /api/auth/captcha
+```
+
+拿到 `captchaId` 和验证码图片后，再访问：
+
+```text
 POST /api/auth/login
 ```
 
 系统做这些事：
 
-1. 根据邮箱查询用户。
-2. 用 BCrypt 校验密码。
-3. 检查用户状态是否正常。
-4. 生成 JWT。
-5. 返回登录结果。
+1. Controller 接收邮箱、密码、验证码 ID 和验证码内容。
+2. Service 先校验 Redis 中的验证码。
+3. 根据邮箱查询用户。
+4. 用 BCrypt 校验密码。
+5. 检查用户状态是否正常。
+6. 生成 JWT。
+7. 返回登录结果。
+
+验证码是一次性的。校验时无论成功还是失败，都会删除 Redis 中对应的验证码，防止反复猜测。
 
 ## JWT 校验流程
 

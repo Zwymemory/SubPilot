@@ -28,6 +28,7 @@ Authorization: Bearer <accessToken>
 
 认证：
 
+- `GET /api/auth/captcha`
 - `POST /api/auth/register`
 - `POST /api/auth/login`
 
@@ -81,6 +82,33 @@ Authorization: Bearer <accessToken>
 健康检查：
 
 - `GET /api/health`
+
+## 登录验证码
+
+登录前先调用：
+
+```text
+GET /api/auth/captcha
+```
+
+返回：
+
+- `captchaId`：验证码 ID。
+- `imageBase64`：验证码图片，前端可直接作为图片地址展示。
+- `expireSeconds`：过期秒数。
+
+登录时提交：
+
+```json
+{
+  "email": "test@example.com",
+  "password": "123456",
+  "captchaId": "验证码ID",
+  "captchaCode": "用户输入的验证码"
+}
+```
+
+验证码存储在 Redis 中，5 分钟过期，并且登录校验时会一次性消费。
 
 ## DTO、VO、Entity 的区别
 

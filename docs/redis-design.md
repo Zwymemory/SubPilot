@@ -8,6 +8,7 @@ Redis 用来缓存高频读取、可从 MySQL 重建的数据。
 
 - 订阅详情。
 - Dashboard 看板汇总。
+- 登录验证码。
 
 ## 为什么要缓存
 
@@ -45,7 +46,15 @@ Dashboard 缓存：
 subpilot:dashboard:summary:{userId}
 ```
 
+登录验证码：
+
+```text
+subpilot:auth:captcha:{captchaId}
+```
+
 不同用户的 key 必须带 `userId`，否则可能发生用户数据串读。
+
+验证码还没有登录用户，所以使用随机 `captchaId` 做隔离。
 
 ## 缓存更新策略
 
@@ -96,6 +105,7 @@ subpilot:dashboard:summary:{userId}
 
 - Redis 不保存最终真实数据。
 - 缓存 key 必须包含用户维度。
+- 登录验证码 key 必须足够随机，并设置较短过期时间。
 - 写操作后优先删除缓存。
 - 缓存丢失不影响业务正确性。
 - 缓存命中只是性能优化，不是业务依赖。

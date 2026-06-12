@@ -35,7 +35,17 @@ POST /api/auth/register
 
 注册成功后会自动初始化默认分类，并返回 `accessToken`。
 
-## 3. 登录用户
+## 3. 获取登录验证码
+
+接口：
+
+```text
+GET /api/auth/captcha
+```
+
+复制返回的 `captchaId`，并查看 `imageBase64` 图片中的验证码。
+
+## 4. 登录用户
 
 接口：
 
@@ -48,13 +58,15 @@ POST /api/auth/login
 ```json
 {
   "email": "demo@example.com",
-  "password": "123456"
+  "password": "123456",
+  "captchaId": "上一步返回的captchaId",
+  "captchaCode": "图片中的验证码"
 }
 ```
 
 复制返回的 token。
 
-## 4. 设置 Swagger 鉴权
+## 5. 设置 Swagger 鉴权
 
 点击 Swagger 右上角 Authorize，输入：
 
@@ -64,7 +76,7 @@ Bearer 你的token
 
 后续接口就会自动带上登录信息。
 
-## 5. 查询默认分类
+## 6. 查询默认分类
 
 接口：
 
@@ -74,7 +86,7 @@ GET /api/categories
 
 注册后应该能看到默认分类，例如 AI 工具、云服务、影音娱乐等。
 
-## 6. 创建订阅
+## 7. 创建订阅
 
 接口：
 
@@ -103,7 +115,7 @@ POST /api/subscriptions
 }
 ```
 
-## 7. 查询订阅
+## 8. 查询订阅
 
 接口：
 
@@ -114,7 +126,7 @@ GET /api/subscriptions/{id}
 
 这里可以验证分页、详情和 Redis 订阅详情缓存。
 
-## 8. 创建账单
+## 9. 创建账单
 
 接口：
 
@@ -136,7 +148,7 @@ POST /api/bills
 }
 ```
 
-## 9. 标记账单已支付
+## 10. 标记账单已支付
 
 接口：
 
@@ -144,7 +156,7 @@ POST /api/bills
 PUT /api/bills/{id}/paid
 ```
 
-## 10. 查看 Dashboard
+## 11. 查看 Dashboard
 
 接口：
 
@@ -157,7 +169,7 @@ GET /api/dashboard/top-subscriptions
 
 这里可以验证账单统计和 Redis dashboard 缓存。
 
-## 11. 验证搜索
+## 12. 验证搜索
 
 接口：
 
@@ -171,7 +183,7 @@ GET /api/search/subscriptions?keyword=OpenAI
 POST /api/search/subscriptions/rebuild
 ```
 
-## 12. 验证通知
+## 13. 验证通知
 
 接口：
 

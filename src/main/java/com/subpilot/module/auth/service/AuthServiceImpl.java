@@ -32,6 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final CategoryService categoryService;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final CaptchaService captchaService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -60,6 +61,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginVO login(LoginRequest request) {
+        captchaService.validate(request.captchaId(), request.captchaCode());
         String email = normalizeEmail(request.email());
         UserEntity user = userService.findByEmail(email)
                 .orElseThrow(() -> new BusinessException(ErrorCode.UNAUTHORIZED, "邮箱或密码错误"));

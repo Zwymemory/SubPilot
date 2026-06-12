@@ -79,7 +79,11 @@ MySQL 负责真实数据，Redis 负责缓存，RabbitMQ 负责异步提醒，El
 登录流程：
 
 ```text
-用户提交邮箱和密码
+用户先获取图形验证码
+  -> 后端生成验证码图片和 captchaId
+  -> 验证码答案写入 Redis，5 分钟过期
+  -> 用户提交邮箱、密码、captchaId、captchaCode
+  -> 校验并删除 Redis 中的验证码
   -> 查询用户
   -> BCrypt 校验密码
   -> 生成 JWT
@@ -231,6 +235,10 @@ MySQL 是主库，Elasticsearch 是搜索副本。如果 ES 同步失败，不�
 ### 为什么要用 JWT？
 
 JWT 适合前后端分离的无状态认证。服务端不需要保存 Session，请求只要带 token，后端就能解析出当前用户。
+
+### 登录验证码怎么实现？
+
+后端提供 `GET /api/auth/captcha` 生成图形验证码，返回 `captchaId` 和 Base64 图片。验证码答案存 Redis，设置 5 分钟过期。登录时提交 `captchaId` 和 `captchaCode`，后端取出 Redis 中的答案进行比较，并删除验证码，保证一次性使用。
 
 ### 为什么密码要用 BCrypt？
 
